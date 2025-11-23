@@ -1,20 +1,31 @@
-# PII NER Assignment Skeleton
+# PII NER Assignment - Gokul M K (ED21B026)
 
-This repo is a skeleton for a token-level NER model that tags PII in STT-style transcripts.
+This repo contains all the code needed to generate synthetic STT Transcripts to train a PII Entity Recognition Model
+
+## Model Details
+Here is the link to the model output: [Model Output](https://drive.google.com/file/d/1J7agm9YtAtkxtDyO5TdRpA6G78ciItLf/view?usp=sharing)
 
 ## Setup
 
 ```bash
 pip install -r requirements.txt
 ```
+## Generate Synthetic Dataset
+The generate.py code is used to generate synthetic STT Transcripts. The template for the transcript can be found in template.py
+```bash
+python src/generate.py \
+  --train_size 1000 \
+  --dev_size 200 \
+  --out_dir data
+```
 
 ## Train
 
 ```bash
 python src/train.py \
-  --model_name distilbert-base-uncased \
-  --train data/train.jsonl \
-  --dev data/dev.jsonl \
+  --model_name roberta-base \
+  --train data/train_syn.jsonl \
+  --dev data/dev_syn.jsonl \
   --out_dir out
 ```
 
@@ -23,7 +34,7 @@ python src/train.py \
 ```bash
 python src/predict.py \
   --model_dir out \
-  --input data/dev.jsonl \
+  --input data/dev_syn.jsonl \
   --output out/dev_pred.json
 ```
 
@@ -31,7 +42,7 @@ python src/predict.py \
 
 ```bash
 python src/eval_span_f1.py \
-  --gold data/dev.jsonl \
+  --gold data/dev_syn.jsonl \
   --pred out/dev_pred.json
 ```
 
@@ -40,9 +51,6 @@ python src/eval_span_f1.py \
 ```bash
 python src/measure_latency.py \
   --model_dir out \
-  --input data/dev.jsonl \
+  --input data/dev_syn.jsonl \
   --runs 50
 ```
-
-Your task in the assignment is to modify the model and training code to improve entity and PII detection quality while keeping **p95 latency below ~20 ms** per utterance (batch size 1, on a reasonably modern CPU).
-Your task in the assignment is to modify the model and training code to improve entity and PII detection quality while keeping **p95 latency below ~20 ms** per utterance (batch size 1, on a reasonably modern CPU).
